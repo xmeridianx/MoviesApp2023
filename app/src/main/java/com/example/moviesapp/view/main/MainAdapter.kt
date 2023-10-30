@@ -1,5 +1,6 @@
 package com.example.moviesapp.view.main
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,10 @@ import com.bumptech.glide.Glide
 import com.example.moviesapp.IMAGE_URL
 import com.example.moviesapp.R
 import com.example.moviesapp.models.Movie
+import com.example.moviesapp.view.detail.DetailFragment
 
-class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
-
-    private var listMovies = emptyList<Movie>()
+class MainAdapter(private val listener: MovieItemClickListener): RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
+    private var listMovies = mutableListOf<Movie>()
 
     class MainViewHolder(view: View): RecyclerView.ViewHolder(view)
 
@@ -29,14 +30,19 @@ class MainAdapter: RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
         Glide.with(holder.itemView.context).load("$IMAGE_URL${listMovies[position].poster_path}").centerCrop()
             .placeholder(R.drawable.ic_launcher_foreground)
             .into(holder.itemView.findViewById<ImageView>(R.id.itemImageView))
+
+        holder.itemView.setOnClickListener{
+            listener.onMovieItemClick(listMovies[position])
+        }
     }
 
     override fun getItemCount(): Int {
         return listMovies.size
     }
 
+
     fun setListMovies(list: List<Movie>){
-        listMovies = list
+        listMovies.addAll(list)
         notifyDataSetChanged()
     }
 }
